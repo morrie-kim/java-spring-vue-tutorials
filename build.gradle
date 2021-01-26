@@ -1,0 +1,57 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.6.RELEASE'
+    id 'io.franzbecker.gradle-lombok' version '1.14'
+    id 'com.moowork.node' version '1.3.1'
+    id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.morrie'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+node {
+    version = '12.18.3'
+    npmVersion = '6.14.8'
+    workDir = file("./src/vueapp")
+    npmWorkDir = file("./src/vueapp")
+    nodeModulesDir = file("./src/vueapp")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
+    compile 'io.springfox:springfox-swagger2:2.9.2'
+    compile 'io.springfox:springfox-swagger-ui:2.9.2'
+
+    compile 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+task setUp(type: NpmTask) {
+    description = "Install Node.js packages"
+    args = ['install']
+    inputs.files file('package.json')
+    outputs.files file('node_modules')
+}
+
+task buildVueApp(type: NpmTask, dependsOn: setUp) {
+    description = "Build vue.js"
+    args = ['run', 'build']
+}
+
+processResources.dependsOn 'buildVueApp'

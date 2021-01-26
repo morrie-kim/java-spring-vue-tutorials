@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: Place Search Service
+
+  datasource:
+    url: jdbc:h2:mem:pss;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    platform: h2
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+    initialization-mode: embedded
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show_sql: true
+    use_sql_comments: true
+    format_sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate.format_sql: true
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Seoul
+
+  h2:
+    console:
+      enabled: true
+      path: /pss-console
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+
+server:
+  port: 9000
+
+logging:
+  config: classpath:logback.xml
+  level:
+    org.springframework: DEBUG
+    org.hibernate: INFO
+    springfox.documentation: INFO
+    com.zaxxer: INFO
+
+pss.security.jwt:
+  accessTokenExpirationTime: 10 # minutes
+  refreshTokenExpirationTime: 60 # minutes
+
+external-api.search-place.auth: KakaoAK 025359e256b95d6ee09b7ad8bce72ed6
